@@ -28,6 +28,7 @@ app.use(bodyParser.json())
 
 
 const Person = require('./models/person')
+const MenuItem = require('./models/MenuItem')
 
 
 
@@ -50,52 +51,48 @@ res.send(customized_idli)
 })
 
 
-app.post('/person',async function(req,res){
 
+
+
+
+
+app.get('/menu', async function(req,res){
     try{
-        const data = req.body
-
-        const newPerson = new Person(data)
-
-        const response= await newPerson.save()
-        console.log('data saved',response)
-        res.status(200).json(response)
+        const data= await MenuItem.find()
+        console.log('data fetched')
+        res.status(200).json(data)
 
     }
     catch(err){
         console.log(err)
-        res.status(500).json({error:'internal server error'})
+        res.status(500).json({error:'Internal server error'})
 
     }
-
 })
 
-app.get('/person/:workType',async function(req,res){
-    try{
-         const workType= req.params.workType
-    if(workType=='chef' || workType=='waiter'|| workType=='manager'){
-        const response = await Person.find({work: workType})
-        console.log('response fetched')
-        res.status(200).json(response)
-
-
-    }
-    else{
-        res.status(404).json({error:' Invalid work type'})
-    }
-
-    }
-    catch(err){
-         console.log(err)
-        res.status(500).json({error:'internal server error'})
-
-
-    }
-   
+app.post('/menu', async (req, res) => {
+try {
+const menuItemData = req.body; // Assuming the requestbody contains menu item data
+// Create a new menu item using the Mongoose model
+const menuItem = new MenuItem(menuItemData);
+// Save the new menu item to the database
+const menu_data = await menuItem.save();
+console.log('Menu item saved');
+res.status(201).json(menu_data);
+} catch (error) {
+console.error('Error creating menu item:', error);
+res.status(500).json({ error: 'Internal server error' });
+}
 })
 
 
 
+
+
+
+
+const personRoutes = require('./routes/personRoutes')
+app.use('/person', personRoutes)
 
 
 app.listen(5000, ()=>{
