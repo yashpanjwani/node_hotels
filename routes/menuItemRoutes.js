@@ -3,7 +3,7 @@ const router= express.Router()
 
 const MenuItem = require('./../models/MenuItem')
 
-router.get('/menu', async function(req,res){
+router.get('/', async function(req,res){
     try{
         const data= await MenuItem.find()
         console.log('data fetched')
@@ -17,7 +17,7 @@ router.get('/menu', async function(req,res){
     }
 })
 
-router.post('/menu', async (req, res) => {
+router.post('/', async (req, res) => {
 try {
 const menuItemData = req.body; // Assuming the requestbody contains menu item data
 // Create a new menu item using the Mongoose model
